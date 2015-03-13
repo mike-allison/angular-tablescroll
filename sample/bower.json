@@ -1,0 +1,9 @@
+{
+  "name": "angular-tablescroll-sample",
+  "version": "1.4.0",
+  "main": "index.html",
+  "dependencies": {
+    "angular": "~1.4.0",
+    "jquery": "~2.1.0"
+  }
+}
