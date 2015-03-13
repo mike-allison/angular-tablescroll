@@ -1,6 +1,6 @@
 {
     "name": "angular-tablescroll",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "authors": [
         "Mike Allison <dj.mikeallison@gmail.com>"
     ],
@@ -23,11 +23,15 @@
         "node_modules",
         "bower_components",
         "test",
-        "tests"
+        "tests",
+        "sample",
+        "angular-tablescroll.ts"
     ],
-    "dependencies": {
+    "devDependencies": {
         "dt-angular": "~1.2.16",
-        "dt-jquery": "~2.0.0",
+        "dt-jquery": "~2.0.0"
+    },
+    "dependencies": {
         "angular": ">=1.2.0",
         "jQuery": ">=1.10.0"
     }

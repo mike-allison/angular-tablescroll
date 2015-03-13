@@ -1,5 +1,5 @@
 /*!
- * angular-tablescroll v.1.0.0
+ * angular-tablescroll
  * http://mikeallisononline.com/
  *
  * Copyright 2015 Mike Allison
