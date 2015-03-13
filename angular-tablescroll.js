@@ -1,6 +1,13 @@
-/**
- * Created by Mike on 3/12/2015.
+/*!
+ * angular-tablescroll v.1.0.0
+ * http://mikeallisononline.com/
+ *
+ * Copyright 2015 Mike Allison
+ * Released under the MIT license
+ * http://opensource.org/licenses/MIT
  */
+/// <reference path="bower_components/dt-jquery/jquery.d.ts" />
+/// <reference path="bower_components/dt-angular/angular.d.ts" />
 angular.module('ngTablescroll', []).directive('ngTablescroll', function () {
     return {
         restrict: 'A',
@@ -95,16 +102,18 @@ angular.module('ngTablescroll', []).directive('ngTablescroll', function () {
             outerdiv.append(footerdiv);
             //Adjust header and footer div width if vertical scrollbar present
             var combinedHeight = self.height() + headerdiv.height() + footerdiv.height();
-            if (combinedHeight >= o.height) {
+            if (combinedHeight >= divHeight) {
                 headerdiv.width(headerdiv.width() - scrollbarpx);
                 footerdiv.width(footerdiv.width() - scrollbarpx);
             }
             //Set body height after other content added to parent
             var marginTop = parseFloat(bodydiv.css("margin-top"));
-            marginTop = marginTop - headerdiv.height();
+            marginTop -= headerdiv.height();
             var marginBottom = parseFloat(bodydiv.css("margin-bottom"));
-            marginBottom = marginBottom - (footerdiv.height() + scrollbarpx);
-            bodydiv.css({ 'overflow': 'auto', 'margin-top': marginTop + 'px', 'margin-bottom': marginBottom + 'px' }).width(divWidth).height(divHeight - scrollbarpx);
+            marginBottom -= footerdiv.height();
+            if (self.width() + scrollbarpx >= divWidth)
+                marginBottom -= scrollbarpx;
+            bodydiv.css({ 'overflow': 'auto', 'margin-top': marginTop + 'px', 'margin-bottom': marginBottom + 'px' }).width(divWidth).height(divHeight);
             if (ie8)
                 self.find('thead').hide();
             //Add reactive resizing
@@ -122,11 +131,6 @@ angular.module('ngTablescroll', []).directive('ngTablescroll', function () {
                     }
                 });
             }
-            // Get this browser's take on no fill
-            // Must be appended else Chrome etc return 'initial'
-            var $temp = $('<div style="background:none;display:none;"/>').appendTo('body');
-            var transparent = $temp.css('backgroundColor');
-            $temp.remove();
         }
     };
 });
