@@ -25,7 +25,11 @@
         "test",
         "tests",
         "sample",
-        "angular-tablescroll.ts"
+        "dist",
+        "nuget",
+        "angular-tablescroll.ts",
+        "*.nuspec",
+        "package.json"
     ],
     "devDependencies": {
         "dt-angular": "~1.2.16",
