@@ -34,7 +34,7 @@ gulp.task('dist', function() {
 });
 
 gulp.task('clean', function() {
-    return gulp.src(['./*.nupk','./dist/**','.tmp/**']).pipe(clean());
+    return gulp.src(['./*.nupkg','./dist/**','.tmp/**']).pipe(clean());
 });
 
 gulp.task('clean-leftovers', function() {
