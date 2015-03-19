@@ -52,7 +52,7 @@ angular.module('yourAppName', ['ngTablescroll']);
 ```
 
 ## Options (optional JSON Scope object)
-```json
+```javascript
 {
     reactive: (bool)(optional)(default: true) enable reactive sizing to parent control
     width: (int)(optional) desired max width in pixels
