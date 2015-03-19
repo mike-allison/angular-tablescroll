@@ -51,7 +51,7 @@ MIT
 angular.module('yourAppName', ['ngTablescroll']);
 ```
 
-## Options (optional JSON Scope object)
+## Options (optional Scope object)
 ```javascript
 {
     reactive: (bool)(optional)(default: true) enable reactive sizing to parent control
