@@ -30,7 +30,7 @@
     "gulp": "^3.8.11",
     "gulp-clean": "^0.3.1",
     "gulp-nuget": "0.0.3",
-    "gulp-tsc": "git+https://github.com/remojansen/gulp-tsc.git",
+    "gulp-typescript": "^2.12.0",
     "run-sequence": "^1.0.2",
     "typescript": ">=1.4.0",
     "typings": "^0.6.8"

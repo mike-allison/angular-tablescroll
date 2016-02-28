@@ -1,6 +1,6 @@
 var gulp = require('gulp'),
     nuget = require('gulp-nuget'),
-    tsc = require('gulp-tsc'),
+    tsc = require('gulp-typescript'),
     clean = require('gulp-clean'),
     runSequence = require('run-sequence'),
     project = require('./package.json'),

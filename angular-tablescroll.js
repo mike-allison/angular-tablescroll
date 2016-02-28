@@ -7,15 +7,8 @@
  * http://opensource.org/licenses/MIT
  */
 /// <reference path="typings/browser.d.ts" />
-// Get this browser's take on no fill
-// Must be appended else Chrome etc return 'initial'
-var $temp = document.createElement('div');
-$temp.style.background = 'none';
-$temp.style.display = 'none';
-document.body.appendChild($temp);
-var transparent = window.getComputedStyle($temp, null).getPropertyValue('background-color');
-document.body.removeChild($temp);
 function NgTablecroll() {
+    var transparent = getWindowBackgroundColor();
     return {
         restrict: 'A',
         link: function (scope, element, attrs) {
@@ -34,27 +27,23 @@ function NgTablecroll() {
             if (self.offsetWidth <= divWidth && self.offsetHeight <= divHeight)
                 return;
             var scrollbarpx = getScrollbarPx();
-            self.style.width = self.offsetWidth; //reinforce table width so it doesn't change dynamically
+            self.style.width = self.offsetWidth + 'px'; //reinforce table width so it doesn't change dynamically
             //Create outer div
             var outerdiv = document.createElement('div');
-            outerdiv.style.overflow = 'hidden';
-            outerdiv.style.width = divWidth + 'px';
-            outerdiv.style.height = divHeight + 'px';
+            outerdiv.style.cssText = "overflow: hidden; width: " + divWidth + "px; height: " + divHeight + "px";
             //Create header div
             var headerdiv = document.createElement('div');
-            headerdiv.style.overflow = 'hidden';
-            headerdiv.style.position = 'relative';
-            headerdiv.style.width = divWidth + 'px';
+            headerdiv.style.cssText = "overflow: hidden; position: relative; width: " + divWidth + "px";
             if (o.headerCss)
-                headerdiv.style.cssText += o.headerCss;
+                headerdiv.classList.add(o.headerCss);
             //Create header clone
             var cloneTable = self.cloneNode(true);
-            cloneTable.width = self.offsetWidth;
+            cloneTable.width = self.offsetWidth + 'px';
             cloneTable.removeChild(cloneTable.getElementsByTagName('tbody')[0]);
             cloneTable.deleteTFoot();
             //Create footer clone
             var cloneFoot = self.cloneNode(true);
-            cloneFoot.width = self.offsetWidth;
+            cloneFoot.width = self.offsetWidth + 'px';
             cloneFoot.removeChild(cloneFoot.getElementsByTagName('tbody')[0]);
             cloneFoot.deleteTHead();
             var headBgColor = null;
@@ -68,7 +57,7 @@ function NgTablecroll() {
                     var val = cells[index];
                     var tdwidth = val.offsetWidth;
                     if (headBgColor == null) {
-                        headBgColor = o.backgroundcolor || bkgcolor(val);
+                        headBgColor = o.backgroundcolor || bkgcolor(val, null);
                     }
                     if (headBgColor == "rgba(0, 0, 0, 0)" || headBgColor == "transparent")
                         headBgColor = "#fff";
@@ -92,14 +81,9 @@ function NgTablecroll() {
             }
             //Create footer div
             var footerdiv = document.createElement('div');
-            footerdiv.style.overflow = 'hidden';
-            footerdiv.style.position = 'relative';
-            footerdiv.style.backgroundColor = headBgColor;
-            footerdiv.style.width = divWidth + 'px';
-            cloneTable.style.tableLayout = 'fixed';
-            cloneTable.style.backgroundColor = headBgColor;
-            cloneFoot.style.tableLayout = 'fixed';
-            cloneFoot.style.backgroundColor = headBgColor;
+            footerdiv.style.cssText = "overflow: hidden; position: relative; background-color: " + headBgColor + "; width: " + divWidth + "px";
+            cloneTable.style.cssText = "tableLayout: fixed; background-color: " + headBgColor;
+            cloneFoot.style.cssText = "tableLayout: fixed; background-color: " + headBgColor;
             self.style.tableLayout = 'fixed';
             //Create body div
             var bodydiv = document.createElement('div');
@@ -132,11 +116,7 @@ function NgTablecroll() {
             marginBottom -= footerdiv.offsetHeight;
             if (self.offsetWidth + scrollbarpx >= divWidth)
                 marginBottom -= scrollbarpx;
-            bodydiv.style.overflow = 'auto';
-            bodydiv.style.marginTop = marginTop + 'px';
-            bodydiv.style.marginBottom = marginBottom + 'px';
-            bodydiv.style.width = divWidth + 'px';
-            bodydiv.style.height = divHeight + 'px';
+            bodydiv.style.cssText = "overflow: auto; margin-top: " + marginTop + "px; margin-bottom: " + marginBottom + "px; width: " + divWidth + "px; height: " + divHeight + "px";
             if (isIE8())
                 self.getElementsByTagName('thead')[0].style.display = 'none';
             //Add reactive resizing
@@ -149,21 +129,10 @@ function NgTablecroll() {
                         var newWidth = parent.offsetWidth;
                         if (o.width && newWidth > o.width)
                             return;
-                        outerdiv.style.overflow = 'hidden';
-                        outerdiv.style.width = newWidth + 'px';
-                        outerdiv.style.height = divHeight + 'px';
-                        headerdiv.style.overflow = 'hidden';
-                        headerdiv.style.position = 'relative';
-                        headerdiv.style.width = (newWidth - scrollbarpx) + 'px';
-                        bodydiv.style.overflow = 'auto';
-                        bodydiv.style.marginTop = marginTop + 'px';
-                        bodydiv.style.marginBottom = marginBottom + 'px';
-                        bodydiv.style.width = newWidth + 'px';
-                        bodydiv.style.height = (divHeight - scrollbarpx) + 'px';
-                        footerdiv.style.overflow = 'hidden';
-                        footerdiv.style.position = 'relative';
-                        footerdiv.style.backgroundColor = headBgColor;
-                        footerdiv.style.width = (newWidth - scrollbarpx) + 'px';
+                        outerdiv.style.cssText = "overflow: hidden; width: " + newWidth + "px; height: " + divHeight + "px";
+                        headerdiv.style.cssText = "overflow: hidden; position: relative; width: " + (newWidth - scrollbarpx) + "px";
+                        bodydiv.style.cssText = "overflow: auto; margin-top: " + marginTop + "px; margin-bottom: " + marginBottom + "px; width: " + newWidth + "px; height: " + (divHeight - scrollbarpx) + "px";
+                        footerdiv.style.cssText = "overflow: hidden; position: relative; width: " + (newWidth - scrollbarpx) + "px";
                         prevParentWidth = newWidth;
                     }
                 });
@@ -181,32 +150,43 @@ function NgTablecroll() {
             function getScrollbarPx() {
                 //get scrollbar size
                 var dummy = document.createElement('div');
+                dummy.style.cssText = 'height: 50px; width: 50px; overflow: scroll';
                 dummy.style.visible = 'hidden';
-                dummy.style.height = '50px';
-                dummy.style.width = '50px';
-                dummy.style.overflow = 'scroll';
                 document.body.appendChild(dummy);
                 var filler = document.createElement('div');
                 filler.style.height = '99px';
                 dummy.appendChild(filler);
-                var scrollbarpx = 50 - dummy.offsetWidth;
+                var scrollbarpx = 50 - dummy.clientWidth;
                 document.body.removeChild(dummy);
                 return scrollbarpx;
             }
             function bkgcolor(element, fallback) {
                 function test($elem) {
-                    if (window.getComputedStyle($elem, null).getPropertyValue('background-color') == transparent) {
+                    if (compute($elem, 'background-color') == transparent) {
                         return $elem.tagName.toLowerCase() !== 'body' ? test($elem.parentNode) : fallback || transparent;
                     }
                     else {
-                        return window.getComputedStyle($elem, null).getPropertyValue('background-color');
+                        return compute($elem, 'background-color');
                     }
                 }
                 return test(element);
             }
         }
     };
+    function compute($element, $style) {
+        return window.getComputedStyle($element, null).getPropertyValue($style);
+    }
+    function getWindowBackgroundColor() {
+        // Get this browser's take on no fill
+        // Must be appended else Chrome etc return 'initial'
+        var $temp = document.createElement('div');
+        $temp.style.background = 'none';
+        $temp.style.display = 'none';
+        document.body.appendChild($temp);
+        var transparent = compute($temp, 'background-color');
+        document.body.removeChild($temp);
+        return transparent;
+    }
 }
 angular.module('ngTablescroll', [])
     .directive('ngTablescroll', NgTablecroll);
-//# sourceMappingURL=angular-tablescroll.js.map
