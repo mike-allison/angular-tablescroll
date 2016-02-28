@@ -27,7 +27,7 @@ function NgTablecroll() {
             if (self.offsetWidth <= divWidth && self.offsetHeight <= divHeight)
                 return;
             var scrollbarpx = getScrollbarPx();
-            self.style.width = self.offsetWidth + 'px'; //reinforce table width so it doesn't change dynamically
+            self.style.width = self.divWidth + 'px'; //reinforce table width so it doesn't change dynamically
             //Create outer div
             var outerdiv = document.createElement('div');
             outerdiv.style.cssText = "overflow: hidden; width: " + divWidth + "px; height: " + divHeight + "px";
@@ -38,7 +38,7 @@ function NgTablecroll() {
                 headerdiv.classList.add(o.headerCss);
             //Create header clone
             var cloneTable = self.cloneNode(true);
-            cloneTable.width = self.offsetWidth + 'px';
+            cloneTable.width = self.clientWidth + 'px';
             cloneTable.removeChild(cloneTable.getElementsByTagName('tbody')[0]);
             cloneTable.deleteTFoot();
             //Create footer clone

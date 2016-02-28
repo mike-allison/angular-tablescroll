@@ -40,7 +40,7 @@ function NgTablecroll() {
 				return;
 
 			const scrollbarpx: number = getScrollbarPx();
-			self.style.width = self.offsetWidth + 'px'; //reinforce table width so it doesn't change dynamically
+			self.style.width = self.divWidth + 'px'; //reinforce table width so it doesn't change dynamically
 
 			//Create outer div
 			let outerdiv: HTMLDivElement = document.createElement('div');
@@ -54,7 +54,7 @@ function NgTablecroll() {
 
 			//Create header clone
 			let cloneTable: HTMLTableElement = <HTMLTableElement> self.cloneNode(true);
-			cloneTable.width = self.offsetWidth + 'px';
+			cloneTable.width = self.clientWidth + 'px';
 			cloneTable.removeChild(cloneTable.getElementsByTagName('tbody')[0]);
 			cloneTable.deleteTFoot();
 
