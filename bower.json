@@ -1,6 +1,6 @@
 {
     "name": "angular-tablescroll",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "authors": [
         "Mike Allison <dj.mikeallison@gmail.com>"
     ],
@@ -32,11 +32,9 @@
         "package.json"
     ],
     "devDependencies": {
-        "dt-angular": "~1.2.16",
-        "dt-jquery": "~2.0.0"
+        "dt-angular": "~1.2.16"
     },
     "dependencies": {
-        "angular": ">=1.2.0",
-        "jQuery": ">=1.10.0"
+        "angular": ">=1.2.0"
     }
 }
