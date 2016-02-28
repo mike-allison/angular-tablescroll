@@ -8,11 +8,6 @@
  */
 /// <reference path="typings/browser.d.ts" />
 
-//extend JQuery interface definition to allow for bkgcolor method
-interface JQuery {
-	bkgcolor? (fallback?:string): string;
-}
-
 function NgTablecroll() {
 	const transparent = getWindowBackgroundColor();
 
