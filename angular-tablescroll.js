@@ -82,16 +82,16 @@ function NgTablecroll() {
             //Create footer div
             var footerdiv = document.createElement('div');
             footerdiv.style.cssText = "overflow: hidden; position: relative; background-color: " + headBgColor + "; width: " + divWidth + "px";
-            cloneTable.style.cssText = "tableLayout: fixed; background-color: " + headBgColor;
-            cloneFoot.style.cssText = "tableLayout: fixed; background-color: " + headBgColor;
+            cloneTable.style.cssText = "table-layout: fixed; background-color: " + headBgColor;
+            cloneFoot.style.cssText = "table-layout: fixed; background-color: " + headBgColor;
             self.style.tableLayout = 'fixed';
             //Create body div
             var bodydiv = document.createElement('div');
             //Add horizontal scroll event
-            bodydiv.onscroll = function () {
+            bodydiv.addEventListener('scroll', function () {
                 headerdiv.scrollLeft = bodydiv.scrollLeft;
                 footerdiv.scrollLeft = bodydiv.scrollLeft;
-            };
+            });
             //Add to DOM
             headerdiv.appendChild(cloneTable);
             footerdiv.appendChild(cloneFoot);
