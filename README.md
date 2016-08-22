@@ -3,8 +3,12 @@ A powerful Angular 1.x table attribute directive that automates scrolling and fi
 
 By default it will size a table to its parent container, fix the position of the header and footer, add horizontal and vertical scrolling as needed, and resize reactively to window resize events.
 
-## Homepage & Demo
-http://mikeallisononline.com/Projects/angularTablescroll
+## Homepage
+http://mikeallisononline.com
+
+## Demo
+
+https://plnkr.co/edit/fdlS8BZhgTVE237I04kY?p=preview
 
 ## Install
 ```
