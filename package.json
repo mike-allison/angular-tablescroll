@@ -1,6 +1,6 @@
 {
   "name": "angular-tablescroll",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "An easy to implement angular module that simplifies adding both horizontal and vertical scrolling with static header and footer to any html table. It will automatically (and reactively) size to it's parent container, or a given set of dimensions.",
   "main": "angular-tablescroll.js",
   "scripts": {

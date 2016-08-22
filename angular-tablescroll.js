@@ -7,11 +7,15 @@
  * http://opensource.org/licenses/MIT
  */
 /// <reference path="typings/browser.d.ts" />
-function NgTablecroll() {
+function NgTablecroll($timeout) {
     var transparent = getWindowBackgroundColor();
     return {
         restrict: 'A',
-        link: function (scope, element, attrs) {
+        link: link
+    };
+    function link(scope, element, attrs) {
+        $timeout(function () {
+            console.log('a');
             var self = element[0];
             //skip if not table element
             if (self.tagName.toLowerCase() !== 'table')
@@ -24,10 +28,12 @@ function NgTablecroll() {
             var divWidth = parseInt(o.width || parent.offsetWidth);
             var divHeight = parseInt(o.height || parent.offsetHeight);
             //bypass if table size smaller than given dimesions
-            if (self.offsetWidth <= divWidth && self.offsetHeight <= divHeight)
+            if (self.offsetWidth <= divWidth && self.offsetHeight <= divHeight) {
+                console.log(self.offsetWidth);
                 return;
+            }
             var scrollbarpx = getScrollbarPx();
-            self.style.width = self.divWidth + 'px'; //reinforce table width so it doesn't change dynamically
+            self.style.width = divWidth + 'px'; //reinforce table width so it doesn't change dynamically
             //Create outer div
             var outerdiv = document.createElement('div');
             outerdiv.style.cssText = "overflow: hidden; width: " + divWidth + "px; height: " + divHeight + "px";
@@ -110,9 +116,9 @@ function NgTablecroll() {
                 footerdiv.style.width = (footerdiv.offsetWidth - scrollbarpx) + 'px';
             }
             //Set body height after other content added to parent
-            var marginTop = parseFloat(bodydiv.style.marginTop || 0);
+            var marginTop = parseFloat(bodydiv.style.marginTop || '0');
             marginTop -= headerdiv.offsetHeight;
-            var marginBottom = parseFloat(bodydiv.style.marginBottom || 0);
+            var marginBottom = parseFloat(bodydiv.style.marginBottom || '0');
             marginBottom -= footerdiv.offsetHeight;
             if (self.offsetWidth + scrollbarpx >= divWidth)
                 marginBottom -= scrollbarpx;
@@ -151,7 +157,7 @@ function NgTablecroll() {
                 //get scrollbar size
                 var dummy = document.createElement('div');
                 dummy.style.cssText = 'height: 50px; width: 50px; overflow: scroll';
-                dummy.style.visible = 'hidden';
+                dummy.style.visibility = 'hidden';
                 document.body.appendChild(dummy);
                 var filler = document.createElement('div');
                 filler.style.height = '99px';
@@ -171,8 +177,8 @@ function NgTablecroll() {
                 }
                 return test(element);
             }
-        }
-    };
+        });
+    }
     function compute($element, $style) {
         return window.getComputedStyle($element, null).getPropertyValue($style);
     }
@@ -189,4 +195,4 @@ function NgTablecroll() {
     }
 }
 angular.module('ngTablescroll', [])
-    .directive('ngTablescroll', NgTablecroll);
+    .directive('ngTablescroll', ['$timeout', NgTablecroll]);

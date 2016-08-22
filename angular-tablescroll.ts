@@ -8,216 +8,225 @@
  */
 /// <reference path="typings/browser.d.ts" />
 
-function NgTablecroll() {
-	const transparent = getWindowBackgroundColor();
+function NgTablecroll($timeout) {
+    const transparent = getWindowBackgroundColor();
 
-	return {
-		restrict: 'A',
-		link: function (scope, element, attrs) {
-			let self: HTMLElement = element[0];
+    return {
+        restrict: 'A',
+        link: link
+    };
 
-			//skip if not table element
-			if (self.tagName.toLowerCase() !== 'table')
-				return;
+    function link(scope, element, attrs) {
+        $timeout(function () {
+            console.log('a');
+            let self: HTMLElement = element[0];
 
-			//get options values
-			let o:any = scope.$eval(attrs.ngTablescroll) || {};
+            //skip if not table element
+            if (self.tagName.toLowerCase() !== 'table')
+                return;
 
-			let parent:HTMLElement = self.parentElement;
-			let prevParentWidth: number = parent.offsetWidth;
+            //get options values
+            let o: any = scope.$eval(attrs.ngTablescroll) || {};
 
-			//get parent dimensions
-			const divWidth: number = parseInt(o.width || parent.offsetWidth);
-			const divHeight: number = parseInt(o.height || parent.offsetHeight);
+            let parent: HTMLElement = self.parentElement;
+            let prevParentWidth: number = parent.offsetWidth;
 
-			//bypass if table size smaller than given dimesions
-			if (self.offsetWidth <= divWidth && self.offsetHeight <= divHeight)
-				return;
+            //get parent dimensions
+            const divWidth: number = parseInt(o.width || parent.offsetWidth);
+            const divHeight: number = parseInt(o.height || parent.offsetHeight);
 
-			const scrollbarpx: number = getScrollbarPx();
-			self.style.width = self.divWidth + 'px'; //reinforce table width so it doesn't change dynamically
+            //bypass if table size smaller than given dimesions
+            if (self.offsetWidth <= divWidth && self.offsetHeight <= divHeight) {
+                console.log(self.offsetWidth);
+                return;
+            }
 
-			//Create outer div
-			let outerdiv: HTMLDivElement = document.createElement('div');
-			outerdiv.style.cssText = `overflow: hidden; width: ${divWidth}px; height: ${divHeight}px`;
+            const scrollbarpx: number = getScrollbarPx();
+            self.style.width = divWidth + 'px'; //reinforce table width so it doesn't change dynamically
 
-			//Create header div
-			let headerdiv: HTMLDivElement = document.createElement('div');
-			headerdiv.style.cssText = `overflow: hidden; position: relative; width: ${divWidth}px`;
-			if (o.headerCss)
-				headerdiv.classList.add(o.headerCss);
+            //Create outer div
+            let outerdiv: HTMLDivElement = document.createElement('div');
+            outerdiv.style.cssText = `overflow: hidden; width: ${divWidth}px; height: ${divHeight}px`;
 
-			//Create header clone
-			let cloneTable: HTMLTableElement = <HTMLTableElement> self.cloneNode(true);
-			cloneTable.width = self.clientWidth + 'px';
-			cloneTable.removeChild(cloneTable.getElementsByTagName('tbody')[0]);
-			cloneTable.deleteTFoot();
+            //Create header div
+            let headerdiv: HTMLDivElement = document.createElement('div');
+            headerdiv.style.cssText = `overflow: hidden; position: relative; width: ${divWidth}px`;
+            if (o.headerCss)
+                headerdiv.classList.add(o.headerCss);
 
-			//Create footer clone
-			let cloneFoot: HTMLTableElement = <HTMLTableElement> self.cloneNode(true);
-			cloneFoot.width = self.offsetWidth + 'px';
-			cloneFoot.removeChild(cloneFoot.getElementsByTagName('tbody')[0]);
-			cloneFoot.deleteTHead();
+            //Create header clone
+            let cloneTable: HTMLTableElement = <HTMLTableElement> self.cloneNode(true);
+            cloneTable.width = self.clientWidth + 'px';
+            cloneTable.removeChild(cloneTable.getElementsByTagName('tbody')[0]);
+            cloneTable.deleteTFoot();
 
-			let headBgColor: string = null;
-			//Set header/footer column widths and click events
-			let header = self.getElementsByTagName('thead');
-			let cloneTableCells = cloneTable.getElementsByTagName('th');
-			let cloneFootCells = cloneFoot.getElementsByTagName('td');
-			if (header[0]) {
-				let cells = header[0].getElementsByTagName('th');
-				for(let index = 0; index < cells.length; index++) {
-					let val = cells[index];
-					const tdwidth: number = val.offsetWidth;
-					if (headBgColor == null) {
-						headBgColor = o.backgroundcolor || bkgcolor(val, null);
-					}
-					if (headBgColor == "rgba(0, 0, 0, 0)" || headBgColor == "transparent")
-						headBgColor = "#fff";
+            //Create footer clone
+            let cloneFoot: HTMLTableElement = <HTMLTableElement> self.cloneNode(true);
+            cloneFoot.width = self.offsetWidth + 'px';
+            cloneFoot.removeChild(cloneFoot.getElementsByTagName('tbody')[0]);
+            cloneFoot.deleteTHead();
 
-					val.style.width = tdwidth + 'px'; //reinforce width
-					if (cloneTableCells[index]){
-						cloneTableCells[index].onclick = () => {
-							val.click();
-						};
-						cloneTableCells[index].style.width = tdwidth + 'px';
-					}
-					if (cloneFootCells[index]) {
-						cloneFootCells[index].onclick = () => {
-							val.click();
-						};
-						cloneFootCells[index].style.width = tdwidth + 'px';
-					}
-				}
-			}
+            let headBgColor: string = null;
+            //Set header/footer column widths and click events
+            let header = self.getElementsByTagName('thead');
+            let cloneTableCells = cloneTable.getElementsByTagName('th');
+            let cloneFootCells = cloneFoot.getElementsByTagName('td');
+            if (header[0]) {
+                let cells = header[0].getElementsByTagName('th');
+                for (let index = 0; index < cells.length; index++) {
+                    let val = cells[index];
+                    const tdwidth: number = val.offsetWidth;
+                    if (headBgColor == null) {
+                        headBgColor = o.backgroundcolor || bkgcolor(val, null);
+                    }
+                    if (headBgColor == "rgba(0, 0, 0, 0)" || headBgColor == "transparent")
+                        headBgColor = "#fff";
 
-			//Create footer div
-			let footerdiv: HTMLDivElement = document.createElement('div');
-			footerdiv.style.cssText = `overflow: hidden; position: relative; background-color: ${headBgColor}; width: ${divWidth}px`;
+                    val.style.width = tdwidth + 'px'; //reinforce width
+                    if (cloneTableCells[index]) {
+                        cloneTableCells[index].onclick = () => {
+                            val.click();
+                        };
+                        cloneTableCells[index].style.width = tdwidth + 'px';
+                    }
+                    if (cloneFootCells[index]) {
+                        cloneFootCells[index].onclick = () => {
+                            val.click();
+                        };
+                        cloneFootCells[index].style.width = tdwidth + 'px';
+                    }
+                }
+            }
 
-			cloneTable.style.cssText = `table-layout: fixed; background-color: ${headBgColor}`;
-			cloneFoot.style.cssText = `table-layout: fixed; background-color: ${headBgColor}`;
+            //Create footer div
+            let footerdiv: HTMLDivElement = document.createElement('div');
+            footerdiv.style.cssText = `overflow: hidden; position: relative; background-color: ${headBgColor}; width: ${divWidth}px`;
 
-			self.style.tableLayout = 'fixed';
+            cloneTable.style.cssText = `table-layout: fixed; background-color: ${headBgColor}`;
+            cloneFoot.style.cssText = `table-layout: fixed; background-color: ${headBgColor}`;
 
-			//Create body div
-			let bodydiv: HTMLDivElement = document.createElement('div');
+            self.style.tableLayout = 'fixed';
 
-			//Add horizontal scroll event
-			bodydiv.addEventListener('scroll', () => {
-				headerdiv.scrollLeft = bodydiv.scrollLeft;
-				footerdiv.scrollLeft = bodydiv.scrollLeft;
-			});
+            //Create body div
+            let bodydiv: HTMLDivElement = document.createElement('div');
 
-			//Add to DOM
-			headerdiv.appendChild(cloneTable);
-			footerdiv.appendChild(cloneFoot);
+            //Add horizontal scroll event
+            bodydiv.addEventListener('scroll', () => {
+                headerdiv.scrollLeft = bodydiv.scrollLeft;
+                footerdiv.scrollLeft = bodydiv.scrollLeft;
+            });
 
-			self.parentNode.insertBefore(outerdiv, self);
-			//outerdiv.appendChild(bodydiv);
-			//self.before(outerdiv);
-			self.parentNode.removeChild(self);
-			bodydiv.appendChild(self);
+            //Add to DOM
+            headerdiv.appendChild(cloneTable);
+            footerdiv.appendChild(cloneFoot);
 
-			outerdiv.appendChild(headerdiv);
-			outerdiv.appendChild(bodydiv);
-			outerdiv.appendChild(footerdiv);
+            self.parentNode.insertBefore(outerdiv, self);
+            //outerdiv.appendChild(bodydiv);
+            //self.before(outerdiv);
+            self.parentNode.removeChild(self);
+            bodydiv.appendChild(self);
 
-			//Adjust header and footer div width if vertical scrollbar present
-			const combinedHeight: number = self.offsetHeight + headerdiv.offsetHeight + footerdiv.offsetHeight;
-			if (combinedHeight >= divHeight) {
-				headerdiv.style.width = (headerdiv.offsetWidth - scrollbarpx) + 'px';
-				footerdiv.style.width = (footerdiv.offsetWidth - scrollbarpx) + 'px';
-			}
+            outerdiv.appendChild(headerdiv);
+            outerdiv.appendChild(bodydiv);
+            outerdiv.appendChild(footerdiv);
 
-			//Set body height after other content added to parent
-			let marginTop: number = parseFloat(bodydiv.style.marginTop || 0);
-			marginTop -= headerdiv.offsetHeight;
-			let marginBottom: number = parseFloat(bodydiv.style.marginBottom || 0);
-			marginBottom -= footerdiv.offsetHeight;
-			if (self.offsetWidth + scrollbarpx >= divWidth)
-				marginBottom -= scrollbarpx;
-			bodydiv.style.cssText = `overflow: auto; margin-top: ${marginTop}px; margin-bottom: ${marginBottom}px; width: ${divWidth}px; height: ${divHeight}px`;
+            //Adjust header and footer div width if vertical scrollbar present
+            const combinedHeight: number = self.offsetHeight + headerdiv.offsetHeight + footerdiv.offsetHeight;
+            if (combinedHeight >= divHeight) {
+                headerdiv.style.width = (headerdiv.offsetWidth - scrollbarpx) + 'px';
+                footerdiv.style.width = (footerdiv.offsetWidth - scrollbarpx) + 'px';
+            }
 
-			if (isIE8())
-				self.getElementsByTagName('thead')[0].style.display = 'none';
+            //Set body height after other content added to parent
+            let marginTop: number = parseFloat(bodydiv.style.marginTop || '0');
+            marginTop -= headerdiv.offsetHeight;
+            let marginBottom: number = parseFloat(bodydiv.style.marginBottom || '0');
+            marginBottom -= footerdiv.offsetHeight;
+            if (self.offsetWidth + scrollbarpx >= divWidth)
+                marginBottom -= scrollbarpx;
+            bodydiv.style.cssText = `overflow: auto; margin-top: ${marginTop}px; margin-bottom: ${marginBottom}px; width: ${divWidth}px; height: ${divHeight}px`;
 
-			//Add reactive resizing
-			if (o.reactive) {
-				makeReactive();
-			}
+            if (isIE8())
+                self.getElementsByTagName('thead')[0].style.display = 'none';
 
-			function makeReactive() {
-				window.addEventListener('resize', () => {
-					if (prevParentWidth != parent.offsetWidth) {
-						const newWidth: number = parent.offsetWidth;
-						if (o.width && newWidth > o.width)
-							return;
-						outerdiv.style.cssText = `overflow: hidden; width: ${newWidth}px; height: ${divHeight}px`;
-						headerdiv.style.cssText = `overflow: hidden; position: relative; width: ${(newWidth - scrollbarpx)}px`;
-						bodydiv.style.cssText = `overflow: auto; margin-top: ${marginTop}px; margin-bottom: ${marginBottom}px; width: ${newWidth}px; height: ${(divHeight - scrollbarpx)}px`;
-						footerdiv.style.cssText = `overflow: hidden; position: relative; width: ${(newWidth - scrollbarpx)}px`;
-						prevParentWidth = newWidth;
-					}
-				});
-			}
+            //Add reactive resizing
+            if (o.reactive) {
+                makeReactive();
+            }
 
-			//IE8 browser test (because it's bad)
-			function isIE8(): boolean {
-				let rv: number = -1;
-				const ua: string = navigator.userAgent;
-				const re: RegExp = new RegExp("Trident\/([0-9]{1,}[\.0-9]{0,})");
-				if (re.exec(ua)) {
-					rv = parseFloat(RegExp.$1);
-				}
-				return rv == 4;
-			}
+            function makeReactive() {
+                window.addEventListener('resize', () => {
+                    if (prevParentWidth != parent.offsetWidth) {
+                        const newWidth: number = parent.offsetWidth;
+                        if (o.width && newWidth > o.width)
+                            return;
+                        outerdiv.style.cssText = `overflow: hidden; width: ${newWidth}px; height: ${divHeight}px`;
+                        headerdiv.style.cssText = `overflow: hidden; position: relative; width: ${(newWidth - scrollbarpx)}px`;
+                        bodydiv.style.cssText = `overflow: auto; margin-top: ${marginTop}px; margin-bottom: ${marginBottom}px; width: ${newWidth}px; height: ${(divHeight - scrollbarpx)}px`;
+                        footerdiv.style.cssText = `overflow: hidden; position: relative; width: ${(newWidth - scrollbarpx)}px`;
+                        prevParentWidth = newWidth;
+                    }
+                });
+            }
 
-			function getScrollbarPx(): number {
-				//get scrollbar size
-				let dummy: HTMLDivElement = document.createElement('div');
-				dummy.style.cssText = 'height: 50px; width: 50px; overflow: scroll';
-				dummy.style.visible = 'hidden';
-				document.body.appendChild(dummy);
-				let filler: HTMLDivElement = document.createElement('div');
-				filler.style.height = '99px';
-				dummy.appendChild(filler);
-				const scrollbarpx: number = 50 - dummy.clientWidth;
-				document.body.removeChild(dummy);
-				return scrollbarpx;
+            //IE8 browser test (because it's bad)
+            function isIE8(): boolean {
+                let rv: number = -1;
+                const ua: string = navigator.userAgent;
+                const re: RegExp = new RegExp("Trident\/([0-9]{1,}[\.0-9]{0,})");
+                if (re.exec(ua)) {
+                    rv = parseFloat(RegExp.$1);
+                }
+                return rv == 4;
+            }
 
-			}
+            function getScrollbarPx(): number {
+                //get scrollbar size
+                let dummy: HTMLDivElement = document.createElement('div');
+                dummy.style.cssText = 'height: 50px; width: 50px; overflow: scroll';
+                dummy.style.visibility = 'hidden';
+                document.body.appendChild(dummy);
+                let filler: HTMLDivElement = document.createElement('div');
+                filler.style.height = '99px';
+                dummy.appendChild(filler);
+                const scrollbarpx: number = 50 - dummy.clientWidth;
+                document.body.removeChild(dummy);
+                return scrollbarpx;
 
-			function bkgcolor(element, fallback): string {
-				function test($elem): string {
-					if (compute($elem, 'background-color') == transparent) {
-						return $elem.tagName.toLowerCase() !== 'body' ? test($elem.parentNode) : fallback || transparent;
-					} else {
-						return compute($elem, 'background-color');
-					}
-				}
-				return test(element);
-			}
-		}
-	};
+            }
 
-	function compute($element, $style): string {
-		return window.getComputedStyle($element, null).getPropertyValue($style);
-	}
+            function bkgcolor(element, fallback): string {
+                function test($elem): string {
+                    if (compute($elem, 'background-color') == transparent) {
+                        return $elem.tagName.toLowerCase() !== 'body' ? test($elem.parentNode) : fallback || transparent;
+                    } else {
+                        return compute($elem, 'background-color');
+                    }
+                }
 
-	function getWindowBackgroundColor(): string {
-		// Get this browser's take on no fill
-		// Must be appended else Chrome etc return 'initial'
-		let $temp: HTMLDivElement = document.createElement('div');
-		$temp.style.background = 'none';
-		$temp.style.display = 'none';
-		document.body.appendChild($temp);
-		const transparent: string = compute($temp, 'background-color');
-		document.body.removeChild($temp);
-		return transparent;
-	}
+                return test(element);
+            }
+        });
+    }
+
+
+    function compute($element, $style): string {
+        return window.getComputedStyle($element, null).getPropertyValue($style);
+    }
+
+    function getWindowBackgroundColor(): string {
+        // Get this browser's take on no fill
+        // Must be appended else Chrome etc return 'initial'
+        let $temp: HTMLDivElement = document.createElement('div');
+        $temp.style.background = 'none';
+        $temp.style.display = 'none';
+        document.body.appendChild($temp);
+        const transparent: string = compute($temp, 'background-color');
+        document.body.removeChild($temp);
+        return transparent;
+    }
 
 }
 
 angular.module('ngTablescroll', [])
-	.directive('ngTablescroll', NgTablecroll);
+    .directive('ngTablescroll', ['$timeout', NgTablecroll]);
